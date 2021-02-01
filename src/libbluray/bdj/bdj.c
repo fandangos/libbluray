@@ -406,10 +406,10 @@ static void *_load_jvm(const char **p_java_home)
                                             "/usr/lib/jvm/default",
                                             "/usr/lib/jvm/",
                                             "/etc/java-config-2/current-system-vm",
-                                            "/usr/lib/jvm/java-7-openjdk",
-                                            "/usr/lib/jvm/java-7-openjdk-" JAVA_ARCH,
                                             "/usr/lib/jvm/java-8-openjdk",
                                             "/usr/lib/jvm/java-8-openjdk-" JAVA_ARCH,
+                                            "/usr/lib/jvm/java-7-openjdk",
+                                            "/usr/lib/jvm/java-7-openjdk-" JAVA_ARCH,
                                             "/usr/lib/jvm/java-6-openjdk",
 #    endif
     };
@@ -846,6 +846,8 @@ static const char * const java_base_exports[] = {
         "org.bluray.media",
         "org.bluray.ti",
         "org.bluray.ti.selection",
+        "org.xbmc.kodi",
+        "org.xbmc.kodi19DV",
         "org.blurayx.s3d.ui",
         "org.blurayx.s3d.system",
         "org.blurayx.s3d.media",
@@ -889,9 +891,13 @@ static int _create_jvm(void *jvm_lib, const char *java_home, const char *jar_fil
 
     option[n++].optionString = str_dup   ("-Dawt.toolkit=java.awt.BDToolkit");
     option[n++].optionString = str_dup   ("-Djava.awt.graphicsenv=java.awt.BDGraphicsEnvironment");
-    option[n++].optionString = str_dup   ("-Xms256M");
-    option[n++].optionString = str_dup   ("-Xmx256M");
-    option[n++].optionString = str_dup   ("-Xss2048k");
+    option[n++].optionString = str_dup   ("-Xms512M");
+    option[n++].optionString = str_dup   ("-Xmx512M");
+    option[n++].optionString = str_dup   ("-Xss4096k");
+    option[n++].optionString = str_printf("-Djava.io.tmpdir=%s", java_home);
+    BD_DEBUG(DBG_BDJ | DBG_CRIT, "Use java_home as cache dir.\n");
+    option[n++].optionString = str_dup   ("-Djava.awt.headless=false");
+    BD_DEBUG(DBG_CRIT | DBG_BDJ, "Disable X11 check\n");
 #ifdef HAVE_BDJ_J2ME
     option[n++].optionString = str_printf("-Djava.home=%s", java_home);
     option[n++].optionString = str_printf("-Xbootclasspath/a:%s/lib/xmlparser.jar", java_home);
